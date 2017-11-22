@@ -1,0 +1,5 @@
+.preamble .imageblock img {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
