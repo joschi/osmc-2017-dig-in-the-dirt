@@ -1,0 +1,8 @@
+rule "threatintel_tor_dst_addr"
+when
+  has_field("dst_addr") AND NOT in_private_net(to_string($message.dst_addr))
+then
+  let dst_addr = to_string($message.dst_addr);
+  let tor_result = tor_lookup(dst_addr);
+  set_field("dst_tor_exit_node", tor_result.threat_indicated);
+end

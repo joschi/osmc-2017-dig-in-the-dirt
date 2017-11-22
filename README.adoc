@@ -1,0 +1,29 @@
+= Dig in the dirt (Talk at OSMC 2017)
+
+Slides: https://joschi.github.io/osmc-2017-dig-in-the-dirt/ (link:slides.pdf[Download PDF])
+
+
+== Build instructions
+
+* Install dependencies:
+
+  $ rm -f Gemfile.lock
+  $ bundle --path=.bundle/gems --binstubs=.bundle/.bin
+
+* Build slides:
+
+  $ make
+
+* Open slides in browser:
+
+  $ make open
+
+* PDF export: https://github.com/hakimel/reveal.js/tree/3.5.0#pdf-export
+  * https://joschi.github.io/osmc-2017-dig-in-the-dirt/?print-pdf
+
+
+== Feedback
+
+If you have questions or feedback about the talk (slides or demo project), please https://github.com/joschi/osmc-2017-dig-in-the-dirt/issues[file an issue in this repository].
+
+Any feedback is welcome!

@@ -1,0 +1,154 @@
+version: '2.1'
+networks:
+  graylog.net:
+    enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.22.11.0/24
+volumes:
+  graylog.data.elastic:
+    driver: "local"
+  graylog.data.mongo:
+    driver: "local"
+  graylog.data.journal:
+    driver: "local"
+  graylog.data.prometheus:
+    driver: "local"
+  graylog.data.grafana:
+    driver: "local"
+services:
+  mongo:
+    image: mongo:3
+    container_name: mongo
+    hostname: mongo
+    mem_limit: 128m
+    environment:
+      - TZ=Europe/Berlin
+    ports:
+      - 27017:27017
+    volumes:
+      - graylog.data.mongo:/data/db
+    networks:
+      - graylog.net
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.4
+    container_name: elasticsearch
+    hostname: elasticsearch
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    environment:
+      - TZ=Europe/Berlin
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - http.host=0.0.0.0
+      - transport.host=elasticsearch
+      - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    volumes:
+      - graylog.data.elastic:/usr/share/elasticsearch/data
+    networks:
+      - graylog.net
+    ports:
+      - "9200:9200"
+  graylog:
+    build: ./graylog-osmc
+    image: graylog:osmc2017
+    hostname: graylog
+    container_name: graylog
+    mem_limit: 1500m
+    environment:
+      - TZ=Europe/Berlin
+      - "GRAYLOG_SERVER_JAVA_OPTS=-Xms1g -Xmx1g -XX:NewRatio=1 -XX:MaxMetaspaceSize=256m -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow"
+      - GRAYLOG_PASSWORD_SECRET=Servus_OSMC_2017
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_REST_TRANSPORT_URI=http://127.0.0.1:9000/api
+      - GRAYLOG_WEB_ENDPOINT_URI=http://127.0.0.1:9000/api
+    ports:
+      # Graylog web interface and REST API
+      - 9000:9000
+      # Beats
+      - 5044:5044
+      # Raw/Plaintext TCP
+      - 5555:5555
+      # GELF TCP
+      - 12201:12201
+      # GELF UDP
+      - 12201:12201/udp
+    depends_on:
+      - mongo
+      - elasticsearch
+    links:
+      - mongo
+      - elasticsearch
+    volumes:
+      - ./node-id:/usr/share/graylog/data/config/node-id
+      - graylog.data.journal:/usr/share/graylog/data/journal
+    networks:
+      graylog.net:
+        ipv4_address: 10.22.11.100
+  packetbeat:
+    image: docker.elastic.co/beats/packetbeat:6.0.0
+    hostname: packetbeat
+    container_name: packetbeat
+    mem_limit: 128m
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=Europe/Berlin
+    volumes:
+      - ./packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
+   # networks:
+   #   - graylog.net
+  prometheus:
+    image: prom/prometheus:v2.0.0
+    hostname: prometheus
+    container_name: prometheus
+    mem_limit: 512m
+    environment:
+      - TZ=Europe/Berlin
+    ports:
+      - 9090:9090
+    volumes:
+      - graylog.data.prometheus:/prometheus-data
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - graylog.net
+  grafana:
+    image: grafana/grafana:4.6.2
+    hostname: grafana
+    container_name: grafana
+    mem_limit: 128m
+    depends_on:
+      - prometheus
+    environment:
+      - TZ=Europe/Berlin
+      - GF_SERVER_ROOT_URL=http://127.0.0.1:3000/
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - 3000:3000
+    volumes:
+      - graylog.data.grafana:/var/lib/grafana
+    networks:
+      - graylog.net
+  ping:
+    build: ./ping
+    image: ping:osmc2017
+    hostname: ping
+    container_name: ping
+    mem_limit: 16m
+    networks:
+      - graylog.net
+  http:
+    build: ./http
+    image: http:osmc2017
+    hostname: http
+    container_name: http
+    mem_limit: 16m
+    networks:
+      - graylog.net

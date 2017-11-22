@@ -1,0 +1,8 @@
+rule "threatintel_whois_src_addr"
+when
+  has_field("src_addr") AND NOT in_private_net(to_string($message.src_addr))
+then
+  let src_addr = to_string($message.src_addr);
+  let whois_result = whois_lookup_ip(src_addr, "src");
+  set_fields(whois_result);
+end

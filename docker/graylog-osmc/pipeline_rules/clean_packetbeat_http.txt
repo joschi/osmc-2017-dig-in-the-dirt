@@ -1,0 +1,21 @@
+rule "clean_packetbeat_http"
+when
+  has_field("type") AND to_string($message.type) == "http"
+then
+  // Select interesting fields and rename their keys to something more useful.
+  set_field("http_response_code", to_long($message.packetbeat_http_response_code));
+  set_field("http_method", to_string($message.packetbeat_http_method));
+  set_field("http_path", to_string($message.packetbeat_http_path));
+  set_field("query", to_string($message.packetbeat_query));
+
+  // Remove fields we don't need or want.
+  remove_field("packetbeat_http_request_headers_content-length");
+  remove_field("packetbeat_http_response_code");
+  remove_field("packetbeat_http_response_headers_content-length");
+  remove_field("packetbeat_http_response_headers_content-type");
+  remove_field("packetbeat_http_response_phrase");
+  remove_field("packetbeat_path");
+  remove_field("packetbeat_query");
+
+  set_field("message", concat("HTTP Request to ", to_string($message.dst_addr)));
+end

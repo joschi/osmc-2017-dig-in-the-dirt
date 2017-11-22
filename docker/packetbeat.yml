@@ -1,0 +1,14 @@
+packetbeat.interfaces.device: eth0
+packetbeat.interfaces.type: af_packet
+packetbeat.protocols:
+- type: icmp
+  enabled: true
+- type: dns
+  ports: [53]
+  include_authorities: true
+  include_additionals: true
+- type: http
+  ports: [80]
+output.logstash:
+  hosts: ["10.22.11.100:5044"]
+#logging.level: debug

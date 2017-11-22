@@ -1,0 +1,30 @@
+rule "clean_packetbeat_generic"
+when
+  has_field("facility") AND to_string($message.facility) == "packetbeat"
+then
+  // Select interesting fields and rename their keys to something more useful.
+  set_field("src_addr", $message.packetbeat_client_ip);
+  set_field("src_port", $message.packetbeat_client_port);
+  set_field("dst_addr", $message.packetbeat_ip);
+  set_field("dst_port", to_long($message.packetbeat_port));
+  set_field("direction", to_string($message.packetbeat_direction));
+  set_field("bytes_in", to_long($message.packetbeat_bytes_in));
+  set_field("bytes_out", to_long($message.packetbeat_bytes_out));
+  set_field("status", to_string($message.packetbeat_status));
+  set_field("response_time", to_long($message.packetbeat_responsetime));
+  set_field("query", to_string($message.packetbeat_query));
+
+  // Remove fields we don't need or want.
+  remove_field("name");
+  remove_field("packetbeat_bytes_in");
+  remove_field("packetbeat_bytes_out");
+  remove_field("packetbeat_client_ip");
+  remove_field("packetbeat_client_port");
+  remove_field("packetbeat_direction");
+  remove_field("packetbeat_ip");
+  remove_field("packetbeat_port");
+  remove_field("packetbeat_responsetime");
+  remove_field("packetbeat_status");
+  remove_field("packetbeat_type");
+  remove_field("facility");
+end

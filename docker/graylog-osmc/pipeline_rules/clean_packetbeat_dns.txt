@@ -1,0 +1,60 @@
+rule "clean_packetbeat_dns"
+when
+  has_field("type") AND contains(to_string($message.type), "dns")
+then
+  // Select interesting fields and rename their keys to something more useful.
+  set_field("dns_question", $message.packetbeat_dns_question_name);
+  remove_field("packetbeat_dns_question_name");
+
+  set_field("dns_flags_authoritative", to_bool($message.packetbeat_dns_flags_authoritative));
+  remove_field("packetbeat_dns_flags_authoritative");
+
+  set_field("dns_flags_recursion_allowed", to_bool($message.packetbeat_dns_flags_recursion_allowed));
+  remove_field("packetbeat_dns_flags_recursion_allowed");
+
+  set_field("dns_flags_recursion_desired", to_bool($message.packetbeat_dns_flags_recursion_desired));
+  remove_field("packetbeat_dns_flags_recursion_desired");
+
+  set_field("dns_flags_truncated_response", to_bool($message.packetbeat_dns_flags_truncated_response));
+  remove_field("packetbeat_dns_flags_truncated_response");
+
+  set_field("dns_op_code", $message.packetbeat_dns_op_code);
+  remove_field("packetbeat_dns_op_code");
+
+  set_field("dns_question_class", $message.packetbeat_dns_question_class);
+  remove_field("packetbeat_dns_question_class");
+
+  set_field("dns_question_type", $message.packetbeat_dns_question_type);
+  remove_field("packetbeat_dns_question_type");
+
+  set_field("dns_response_code", $message.packetbeat_dns_response_code);
+  remove_field("packetbeat_dns_response_code");
+
+  // Remove fields we don't need or want.
+  remove_field("packetbeat_count");
+  remove_field("packetbeat_out");
+  remove_field("packetbeat_dns_additionals_count");
+  remove_field("packetbeat_dns_answers_count");
+  remove_field("packetbeat_dns_authorities");
+  remove_field("packetbeat_dns_authorities_count");
+  remove_field("packetbeat_dns_id");
+  remove_field("packetbeat_dns_answers");
+  remove_field("packetbeat_direction");
+  remove_field("packetbeat_responsetime");
+  remove_field("packetbeat_error");
+  remove_field("packetbeat_transport");
+  remove_field("packetbeat_method");
+  remove_field("packetbeat_resource");
+  remove_field("packetbeat_query");
+  remove_field("packetbeat_dns_flags_authentic_data");
+  remove_field("packetbeat_dns_flags_checking_disabled");
+  remove_field("packetbeat_dns_flags_recursion_available");
+  remove_field("packetbeat_dns_question_etld_plus_one");
+  remove_field("packetbeat_dns_additionals");
+
+  // Remove trailing . if there is one
+  let fix = regex("(.+?)\\.?$", to_string($message.dns_question));
+  set_field("dns_question", to_string(fix["0"]));
+
+  set_field("message", concat("DNS Query: ", to_string($message.dns_question)));
+end

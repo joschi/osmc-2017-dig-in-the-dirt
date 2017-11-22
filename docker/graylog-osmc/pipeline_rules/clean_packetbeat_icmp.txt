@@ -1,0 +1,23 @@
+rule "clean_packetbeat_icmp"
+when
+  has_field("type") AND to_string($message.type) == "icmp"
+then
+  // Select interesting fields and rename their keys to something more useful.
+  set_field("icmp_version", to_long($message.packetbeat_icmp_version));
+  set_field("icmp_request_code", to_long($message.packetbeat_icmp_request_code));
+  set_field("icmp_request_type", to_long($message.packetbeat_icmp_request_type));
+  set_field("icmp_response_code", to_long($message.packetbeat_icmp_response_code));
+  set_field("icmp_response_type", to_long($message.packetbeat_icmp_response_type));
+
+  // Remove fields we don't need or want.
+  remove_field("packetbeat_icmp_request_code");
+  remove_field("packetbeat_icmp_request_message");
+  remove_field("packetbeat_icmp_request_type");
+  remove_field("packetbeat_icmp_response_code");
+  remove_field("packetbeat_icmp_response_message");
+  remove_field("packetbeat_icmp_response_type");
+  remove_field("packetbeat_icmp_version");
+  remove_field("packetbeat_path");
+
+  set_field("message", concat("ICMP Request to ", to_string($message.dst_addr)));
+end

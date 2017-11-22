@@ -1,0 +1,8 @@
+rule "threatintel_whois_dst_addr"
+when
+  has_field("dst_addr") AND NOT in_private_net(to_string($message.dst_addr))
+then
+  let dst_addr = to_string($message.dst_addr);
+  let whois_result = whois_lookup_ip(dst_addr, "dst");
+  set_fields(whois_result);
+end

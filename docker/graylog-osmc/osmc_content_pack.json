@@ -1,0 +1,425 @@
+{
+   "description" : "Dashboards and inputs for Graylog Demo at OSMC 2017 (Dig in the dirt)",
+   "name" : "OSMC 2017",
+   "inputs" : [
+      {
+         "static_fields" : {},
+         "extractors" : [],
+         "global" : false,
+         "configuration" : {
+            "tcp_keepalive" : false,
+            "tls_enable" : false,
+            "tls_key_password" : "",
+            "port" : 5044,
+            "tls_client_auth_cert_file" : "",
+            "tls_key_file" : "",
+            "tls_client_auth" : "disabled",
+            "override_source" : null,
+            "recv_buffer_size" : 1048576,
+            "tls_cert_file" : "",
+            "bind_address" : "0.0.0.0"
+         },
+         "type" : "org.graylog.plugins.beats.BeatsInput",
+         "title" : "Beats",
+         "id" : "5a140281b3cb1f0001c7d383"
+      }
+   ],
+   "dashboards" : [
+      {
+         "dashboard_widgets" : [
+            {
+               "description" : "Destination locations",
+               "cache_time" : 10,
+               "type" : "org.graylog.plugins.map.widget.strategy.MapWidgetStrategy",
+               "configuration" : {
+                  "timerange" : {
+                     "range" : 1800,
+                     "type" : "relative"
+                  },
+                  "query" : "",
+                  "field" : "dst_addr_geolocation"
+               },
+               "col" : 2,
+               "height" : 2,
+               "row" : 1,
+               "width" : 2
+            },
+            {
+               "width" : 1,
+               "col" : 3,
+               "height" : 3,
+               "row" : 6,
+               "configuration" : {
+                  "show_pie_chart" : true,
+                  "query" : "",
+                  "field" : "dst_addr_country_code",
+                  "timerange" : {
+                     "type" : "relative",
+                     "range" : 1800
+                  },
+                  "stacked_fields" : "",
+                  "data_table_limit" : 50,
+                  "sort_order" : "desc",
+                  "limit" : 5,
+                  "show_data_table" : true
+               },
+               "cache_time" : 10,
+               "type" : "QUICKVALUES",
+               "description" : "Destination country codes"
+            },
+            {
+               "cache_time" : 10,
+               "type" : "QUICKVALUES",
+               "description" : "Destination cities",
+               "configuration" : {
+                  "sort_order" : "desc",
+                  "data_table_limit" : 50,
+                  "timerange" : {
+                     "type" : "relative",
+                     "range" : 1800
+                  },
+                  "stacked_fields" : "",
+                  "limit" : 5,
+                  "show_data_table" : true,
+                  "query" : "",
+                  "show_pie_chart" : true,
+                  "field" : "dst_addr_city_name"
+               },
+               "height" : 3,
+               "col" : 2,
+               "row" : 6,
+               "width" : 1
+            },
+            {
+               "width" : 2,
+               "col" : 2,
+               "height" : 1,
+               "row" : 5,
+               "configuration" : {
+                  "interval" : "minute",
+                  "timerange" : {
+                     "type" : "relative",
+                     "range" : 1800
+                  },
+                  "query" : ""
+               },
+               "type" : "SEARCH_RESULT_CHART",
+               "cache_time" : 10,
+               "description" : "Response times"
+            },
+            {
+               "height" : 1,
+               "col" : 1,
+               "row" : 1,
+               "width" : 1,
+               "type" : "STATS_COUNT",
+               "cache_time" : 10,
+               "description" : "Response times stats",
+               "configuration" : {
+                  "stats_function" : "cardinality",
+                  "trend" : true,
+                  "field" : "response_time",
+                  "query" : "",
+                  "lower_is_better" : true,
+                  "timerange" : {
+                     "range" : 1800,
+                     "type" : "relative"
+                  }
+               }
+            },
+            {
+               "configuration" : {
+                  "relative" : 1800,
+                  "timerange" : {
+                     "type" : "relative",
+                     "range" : 1800
+                  },
+                  "renderer" : "bar",
+                  "query" : "",
+                  "interpolation" : "linear",
+                  "interval" : "minute",
+                  "valuetype" : "count",
+                  "field" : "bytes_out",
+                  "rangeType" : "relative"
+               },
+               "description" : "Egress bytes",
+               "cache_time" : 10,
+               "type" : "FIELD_CHART",
+               "width" : 2,
+               "row" : 4,
+               "col" : 2,
+               "height" : 1
+            },
+            {
+               "width" : 2,
+               "row" : 3,
+               "col" : 2,
+               "height" : 1,
+               "configuration" : {
+                  "interval" : "minute",
+                  "valuetype" : "count",
+                  "field" : "bytes_in",
+                  "rangeType" : "relative",
+                  "query" : "",
+                  "interpolation" : "linear",
+                  "renderer" : "bar",
+                  "relative" : 1800,
+                  "timerange" : {
+                     "range" : 1800,
+                     "type" : "relative"
+                  }
+               },
+               "description" : "Ingress bytes",
+               "cache_time" : 10,
+               "type" : "FIELD_CHART"
+            },
+            {
+               "row" : 2,
+               "col" : 1,
+               "height" : 3,
+               "width" : 1,
+               "type" : "QUICKVALUES",
+               "cache_time" : 10,
+               "description" : "Response status",
+               "configuration" : {
+                  "query" : "",
+                  "show_pie_chart" : true,
+                  "field" : "status",
+                  "data_table_limit" : 50,
+                  "sort_order" : "desc",
+                  "stacked_fields" : "",
+                  "timerange" : {
+                     "range" : 1800,
+                     "type" : "relative"
+                  },
+                  "show_data_table" : true,
+                  "limit" : 5
+               }
+            },
+            {
+               "width" : 1,
+               "row" : 5,
+               "height" : 3,
+               "col" : 1,
+               "configuration" : {
+                  "show_pie_chart" : true,
+                  "query" : "",
+                  "field" : "type",
+                  "timerange" : {
+                     "type" : "relative",
+                     "range" : 1800
+                  },
+                  "stacked_fields" : "",
+                  "data_table_limit" : 50,
+                  "sort_order" : "desc",
+                  "limit" : 5,
+                  "show_data_table" : true
+               },
+               "type" : "QUICKVALUES",
+               "cache_time" : 10,
+               "description" : "Connection types"
+            }
+         ],
+         "title" : "Connections",
+         "description" : "Details about connections (DNS, HTTP, ICMP)"
+      },
+      {
+         "title" : "DNS",
+         "description" : "DNS",
+         "dashboard_widgets" : [
+            {
+               "col" : 2,
+               "height" : 3,
+               "row" : 1,
+               "width" : 1,
+               "type" : "QUICKVALUES",
+               "cache_time" : 10,
+               "description" : "Possible threats (DNS question)",
+               "configuration" : {
+                  "timerange" : {
+                     "type" : "relative",
+                     "range" : 1800
+                  },
+                  "stacked_fields" : "",
+                  "sort_order" : "desc",
+                  "data_table_limit" : 50,
+                  "limit" : 5,
+                  "show_data_table" : true,
+                  "show_pie_chart" : true,
+                  "query" : "threat_indicated:true",
+                  "field" : "dns_question",
+                  "stream_id" : "5a140ac4b3cb1f0001c7dc86"
+               }
+            },
+            {
+               "width" : 1,
+               "col" : 1,
+               "height" : 3,
+               "row" : 1,
+               "configuration" : {
+                  "query" : "status:OK",
+                  "show_pie_chart" : true,
+                  "stream_id" : "5a140ac4b3cb1f0001c7dc86",
+                  "field" : "dns_question",
+                  "sort_order" : "desc",
+                  "data_table_limit" : 50,
+                  "timerange" : {
+                     "type" : "relative",
+                     "range" : 1800
+                  },
+                  "stacked_fields" : "",
+                  "limit" : 5,
+                  "show_data_table" : true
+               },
+               "description" : "Successful DNS requests",
+               "cache_time" : 10,
+               "type" : "QUICKVALUES"
+            },
+            {
+               "configuration" : {
+                  "data_table_limit" : 50,
+                  "sort_order" : "desc",
+                  "stacked_fields" : "",
+                  "timerange" : {
+                     "type" : "relative",
+                     "range" : 1800
+                  },
+                  "show_data_table" : true,
+                  "limit" : 5,
+                  "query" : "status:Error",
+                  "show_pie_chart" : true,
+                  "stream_id" : "5a140ac4b3cb1f0001c7dc86",
+                  "field" : "dns_question"
+               },
+               "description" : "Failed DNS requests",
+               "cache_time" : 10,
+               "type" : "QUICKVALUES",
+               "width" : 1,
+               "row" : 1,
+               "col" : 3,
+               "height" : 3
+            },
+            {
+               "height" : 1,
+               "col" : 1,
+               "row" : 4,
+               "width" : 3,
+               "description" : "Response time",
+               "type" : "FIELD_CHART",
+               "cache_time" : 10,
+               "configuration" : {
+                  "renderer" : "line",
+                  "relative" : 1800,
+                  "timerange" : {
+                     "range" : 1800,
+                     "type" : "relative"
+                  },
+                  "interval" : "minute",
+                  "stream_id" : "5a140ac4b3cb1f0001c7dc86",
+                  "valuetype" : "count",
+                  "field" : "response_time",
+                  "rangeType" : "relative",
+                  "query" : "",
+                  "interpolation" : "linear"
+               }
+            },
+            {
+               "description" : "DNS requests over time",
+               "type" : "SEARCH_RESULT_CHART",
+               "cache_time" : 10,
+               "configuration" : {
+                  "timerange" : {
+                     "range" : 1800,
+                     "type" : "relative"
+                  },
+                  "query" : "",
+                  "stream_id" : "5a140ac4b3cb1f0001c7dc86",
+                  "interval" : "minute"
+               },
+               "row" : 5,
+               "col" : 1,
+               "height" : 1,
+               "width" : 3
+            }
+         ]
+      }
+   ],
+   "category" : "osmc",
+   "streams" : [
+      {
+         "id" : "5a146f7d753b780001d35fcd",
+         "stream_rules" : [
+            {
+               "description" : "",
+               "type" : "EXACT",
+               "field" : "type",
+               "inverted" : false,
+               "value" : "icmp"
+            },
+            {
+               "value" : "packetbeat",
+               "inverted" : false,
+               "field" : "facility",
+               "type" : "EXACT",
+               "description" : ""
+            }
+         ],
+         "description" : "ICMP packets captured by Packetbeat",
+         "outputs" : [],
+         "title" : "ICMP",
+         "disabled" : false,
+         "default_stream" : false,
+         "matching_type" : "AND"
+      },
+      {
+         "title" : "DNS",
+         "matching_type" : "AND",
+         "default_stream" : false,
+         "disabled" : false,
+         "stream_rules" : [
+            {
+               "type" : "EXACT",
+               "description" : "",
+               "field" : "type",
+               "inverted" : false,
+               "value" : "dns"
+            },
+            {
+               "field" : "facility",
+               "inverted" : false,
+               "value" : "packetbeat",
+               "description" : "",
+               "type" : "EXACT"
+            }
+         ],
+         "description" : "DNS packets captured by Packetbeat",
+         "id" : "5a140ac4b3cb1f0001c7dc86",
+         "outputs" : []
+      },
+      {
+         "outputs" : [],
+         "id" : "5a1499df753b780001a15d80",
+         "stream_rules" : [
+            {
+               "description" : "",
+               "type" : "EXACT",
+               "value" : "http",
+               "inverted" : false,
+               "field" : "type"
+            },
+            {
+               "value" : "packetbeat",
+               "field" : "facility",
+               "inverted" : false,
+               "type" : "EXACT",
+               "description" : ""
+            }
+         ],
+         "description" : "HTTP packets captured by Packetbeat",
+         "disabled" : false,
+         "default_stream" : false,
+         "matching_type" : "AND",
+         "title" : "HTTP"
+      }
+   ]
+}

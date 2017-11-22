@@ -1,0 +1,7 @@
+rule "threatintel_packetbeat_inflate"
+when
+  to_bool($message.dns_question_threat_indicated) OR to_bool($message.src_addr_threat_indicated) OR to_bool($message.dst_addr_threat_indicated)
+then
+  // make lookups easy
+  set_field("threat_indicated", true);
+end
