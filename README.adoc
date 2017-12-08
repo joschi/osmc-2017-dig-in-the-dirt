@@ -1,7 +1,7 @@
 = Dig in the dirt (Talk at OSMC 2017)
 
-Slides: https://joschi.github.io/osmc-2017-dig-in-the-dirt/ (link:slides.pdf[Download PDF])
-
+* Slides: https://joschi.github.io/osmc-2017-dig-in-the-dirt/ (link:slides.pdf[Download PDF])
+* Video: https://www.youtube.com/watch?v=T7w9Gc2Rhrk&list=PLeoxx10paaAn_xHJ5wBhnBJyW_d5G7-Bl
 
 == Build instructions
 
